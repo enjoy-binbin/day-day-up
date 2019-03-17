@@ -8,7 +8,7 @@
 
 
 
-文件内容格式：
+算法文件内容格式：
 
 # 1. 题目名
 
@@ -34,5 +34,41 @@
 class Solution(object):
     def myfunc(self)
     ....
+```
+
+
+
+
+
+数据库文件格式:
+
+# 1. 题目名
+
+**<font color=red>难度: Easy</font>**
+
+## 刷题内容
+
+> 原题链接
+
+- https://leetcode-cn.com/problems/duplicate-emails/
+
+> SQL架构
+
+```sql
+SQL架构...
+```
+
+> 内容描述
+
+```
+内容描述....
+```
+
+## 解题方案
+
+> 方法一：
+
+```mysql
+mysql> xxxx
 ```
 
