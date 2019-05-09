@@ -2,8 +2,6 @@
 
 网站为：https://leetcode-cn.com/problemset/all/
 
-参考于：https://github.com/apachecn/awesome-algorithm/tree/master/docs/Leetcode_Solutions/Python
-
 文件命名形式： `题目id._题目描述`
 
 
