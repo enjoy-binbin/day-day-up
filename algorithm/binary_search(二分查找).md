@@ -1,11 +1,24 @@
-"""
-@title: Binary Search 二分查找
-@file: binary_search(二分查找).py
-@desc: 在一个有序的列表中查找元素, 返回下标
-@思路: 每次都将数组折半, 时间复杂度O(log n)
-"""
+#### 二分查找
+
+##### 一、前言
+
+二分查找是一种效率很高的查找算法，相对于简单线性查找，效率高很多
+
+二分查找的前提是，数组列表必须是有序的。思想是DC分治法(Divide and Conquer)的典型应用
 
 
+
+##### 二、查找思想
+
+每次都将数组折半进行查找，小了大了就分别在另外部分进行查找，时间复杂度O(log n)
+
+![bubble_sort](./images/binary_search.jpg)
+
+
+
+##### 三、代码实现
+
+```python
 def binary_search(array, item):
     """ 二分查找, 在有序array中查找item元素, 返回下标 时间复杂度O(log n) """
     low = 0
@@ -27,7 +40,9 @@ def binary_search(array, item):
 
     return None  # 没有找到
 
+
 if __name__ == '__main__':
     my_list = [1, 5, 7, 22, 32, 52]
     print(binary_search(my_list, 52))  # 4
     print(binary_search(my_list, 88))  # None
+```
