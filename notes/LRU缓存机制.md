@@ -212,3 +212,123 @@ if __name__ == '__main__':
     print(test(2))  # 这里就直接用到了缓存, 没有sleep(1)
 ```
 
+**一个钟手写简单的LRUCache**
+```python
+# 手写一个LruCache, 相关kv存储在dict中, 使用链表实现淘汰机制
+import time
+
+class Node:
+    """ 链表节点, 也是缓存字典中的value """ 
+    def __init__(self, key, value, ttl=-1):
+        self.key = key
+        self.value = value
+        self.ttl = ttl
+        self.prev = None  # 前继节点
+        self.next = None  # 后继节点
+        self.expire_time = None  # 过期时间的绝对时间
+
+        if ttl == -1:
+            self.expire_time = None # 为None无过期时间
+        else:
+            self.expire_time = int(time.time()) + ttl
+    
+    def is_expire(self):
+        """ 节点数据是否过期 """ 
+        if self.expire_time is None:
+            return False
+
+        return int(time.time()) > self.expire_time
+
+class LruCache():
+    def __init__(self, max_size=5):
+        self.max_size = max_size  # 最大长度
+        self.dict = {}  
+        self.head = Node(None, None, -1)  # 头节点
+        self.tail = self.head  # 尾节点
+    
+    def _delete_node(self, node):
+        # 前节点指向后节点（跳过当前节点）
+        node.prev.next = node.next
+        
+        # 如果后节点不为空, 更新它的前继节点
+        if node.next is not None:
+            node.next.prev = node.prev
+        
+        # 如果删除的刚好是链表的最后一个节点, 需要更新tail
+        if node == self.tail:
+            self.tail = node.prev
+    
+    def _insert_node(self, node):
+        # 如果是第一个节点
+        if self.head == self.tail:
+            self.tail = node  # 设置尾节点
+        
+        # 插入的节点总是在最前面即在head的后面
+        node.next = self.head.next  # head -> node -> xx
+        node.prev = self.head
+
+        if self.head.next is not None:
+            # 需要将后面的元素的prev指向node
+            self.head.next.prev = node
+
+        self.head.next = node
+
+    def _shrink(self):
+        # 如果超过了最大长度, 删除末尾元素
+        if len(self.dict) > self.max_size:
+            if self.head == self.tail:
+                return None
+            
+            node = self.tail
+            del self.dict[node.key]
+            self._delete_node(node)
+
+    def set(self, key, value, ttl=-1):
+        # 如果key存在, 就删掉它, 再进行重新插入
+        if key in self.dict:
+            # 删字典
+            node = self.dict[key]
+            del self.dict[key]
+            # 删链表
+            self._delete_node(node)
+        
+        # 插入逻辑
+        node = Node(key, value, ttl)
+        # 插入字典
+        self.dict[key] = node
+        # 插入链表
+        self._insert_node(node)
+        # 控制长度
+        self._shrink()
+
+    def get(self, key):
+        if key in self.dict:
+            node = self.dict[key]
+            # 判断节点数据是否过期
+            if not node.is_expire():
+                # 需要更新此节点为热节点, 简单的就先删除再插入
+                self._delete_node(node)
+                self._insert_node(node)
+                return node.value
+        return None
+    
+    def delete(self, key):
+        if key in self.dict:
+            node = self.dict[key]
+            del self.dict[key]
+            self._delete_node(node)
+
+if __name__ == "__main__":
+    cache = LruCache(max_size=3)
+    for i in range(5):
+        # 0 1 2 3 4
+        cache.set(str(i), i)
+    
+    for i in range(5):
+        print(cache.get(str(i)))  # None, None, 2, 3, 4
+    
+    cur = cache.head
+    while cur.next:
+        print(cur.next.value)  # 4, 3, 2
+        cur = cur.next
+```
