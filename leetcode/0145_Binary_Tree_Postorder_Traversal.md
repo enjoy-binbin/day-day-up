@@ -1,6 +1,6 @@
-# 145. Binary Tree Preorder Traversal 二叉树的前序遍历
+# 145. Binary Tree Postorder Traversal 二叉树的后序遍历
 
-**<font color=red>难度: Difficult</font>**
+**<font color=red>难度: Medium</font>**
 
 ## 刷题内容
 
